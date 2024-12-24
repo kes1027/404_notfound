@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Padlet Style Board</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+  </head>
+  <body>
+    <div class="inner">
+      <!-- 버튼 -->
+      <button id="addNote" class="add-button">+</button>
+
+      <div class="board-container" id="board">
+        <!-- 메모들이 여기에 추가됩니다 -->
+      </div>
+
+      <!-- 메모 작성 모달 -->
+      <div id="noteModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <input type="text" id="noteTitle" placeholder="제목" class="note-title-input" />
+          <textarea id="noteContent" placeholder="내용을 입력하세요..." class="note-content-input"></textarea>
+          <div class="modal-buttons">
+            <button id="saveNote">저장</button>
+            <input type="color" id="colorPicker" value="#ffffff" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/board.js"></script>
+  </body>
+</html>

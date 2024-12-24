@@ -1,0 +1,30 @@
+<!-- !+enter -->
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/404.css" />
+    <title>404 Page</title>
+  </head>
+
+  <body>
+    <div id="errorPage" class="error-text">
+      <div class="number">4<span class="clickable-o" onclick="goToBoard()">0</span>4</div>
+      <div class="text">Not Found</div>
+    </div>
+    <div id="newContent" style="display: none"></div>
+
+    <script>
+      function goToBoard() {
+        const errorPage = document.getElementById('errorPage');
+        errorPage.classList.add('fade-out');
+
+        setTimeout(() => {
+          window.location.href = 'new-content.html';
+        }, 500); // 페이드 아웃 애니메이션이 끝난 후 이동
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  background: url(/img/404_background.gif);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 404 */
+.error-text {
+  font-family: 'DungGeunMo';
+  transition: opacity 0.5s ease;
+  text-align: center;
+  font-weight: normal;
+  color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.number {
+  font-size: 500px;
+  line-height: 1;
+}
+
+.text {
+  font-size: 100px;
+  margin-top: -80px;
+}
+
+.clickable-o {
+  /* color: #007bff; */
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.clickable-o:hover {
+  transform: scale(1.1);
+}
+
+.fade-out {
+  opacity: 0 !important;
+}
+
+.fade-in {
+  opacity: 1 !important;
+}

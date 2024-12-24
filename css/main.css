@@ -1,0 +1,189 @@
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  margin: 0;
+  height: 100vh;
+  background: url(/img/404_background.gif);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.inner {
+  width: 100%;
+  height: 100%;
+  /* display: flex;
+  flex-direction: column;
+  align-items: center; */
+  padding: 20px;
+}
+
+/* 새 메모 추가 버튼 스타일 수정 */
+.add-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #0066ff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  z-index: 1000;
+}
+
+.add-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* board-container의 gap 속성 수정 */
+.board-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  min-height: calc(100vh - 80px);
+}
+
+/* 메모 카드의 여백도 조정 */
+.note {
+  max-height: fit-content;
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* 그림자도 약간 줄임 */
+  cursor: move;
+  user-select: none;
+  touch-action: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin: 0; /* 혹시 모를 마진 제거 */
+}
+
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* 중앙 정렬 */
+  margin-bottom: 10px;
+}
+
+.note:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.note-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0; /* 기존 마진 제거 */
+  flex: 1; /* 남은 공간 차지 */
+}
+
+.note-content {
+  font-size: 1rem;
+  color: #333;
+  white-space: pre-wrap;
+}
+
+.note-footer {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+/* 모달 스타일 */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal-content {
+  position: relative;
+  background-color: white;
+  margin: 10% auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 8px;
+}
+
+.close {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.note-title-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.note-content-input {
+  width: 100%;
+  height: 200px;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#saveNote {
+  padding: 10px 20px;
+  background-color: #0066ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.note.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
+.sortable-ghost {
+  opacity: 0.3;
+  background-color: #f0f0f0;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #ff4444;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 5px;
+  margin-left: 10px; /* 제목과의 간격 */
+  line-height: 1; /* 버튼 높이 조정 */
+  opacity: 0.7; /* 약간 투명하게 */
+  transition: opacity 0.2s;
+}
+.delete-btn:hover {
+  opacity: 1; /* 호버 시 완전 불투명 */
+}
