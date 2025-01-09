@@ -2,7 +2,7 @@ body {
   font-family: 'Noto Sans KR', sans-serif;
   margin: 0;
   height: 100vh;
-  background: url(../img/404_background.gif);
+  background: url(/img/404_background.gif);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -99,64 +99,107 @@ body {
   color: #666;
 }
 
-/* 모달 스타일 */
+/* 모달 기본 스타일 */
 .modal {
   display: none;
   position: fixed;
-  top: 0;
+  z-index: 1000;
   left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  overflow-y: auto;
 }
 
+/* 모달 내용 스타일 */
 .modal-content {
-  position: relative;
-  background-color: white;
-  margin: 10% auto;
+  background-color: #fefefe;
+  margin: 50px auto;
   padding: 20px;
+  border-radius: 8px;
   width: 90%;
   max-width: 500px;
-  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
+/* 닫기 버튼 */
 .close {
   position: absolute;
-  right: 20px;
-  top: 10px;
-  font-size: 28px;
+  right: 30px;
+  top: 20px;
+  font-size: 24px;
+  font-weight: bold;
   cursor: pointer;
+  color: #666;
+}
+.close:hover {
+  color: #000;
 }
 
+/* 입력 필드 스타일 */
 .note-title-input {
-  width: 100%;
+  width: 95%;
   padding: 10px;
   margin-bottom: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  font-size: 16px;
 }
 
 .note-content-input {
-  width: 100%;
+  width: 95%;
   height: 200px;
   padding: 10px;
   margin-bottom: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
   resize: vertical;
+  min-height: 100px;
+  max-height: 400px;
+  font-size: 14px;
 }
 
+/* 메모 날짜 스타일 */
+.note-footer {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.note-date {
+  font-size: 12px;
+  color: #666;
+}
+
+/* 모달 버튼 영역 */
 .modal-buttons {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 15px;
 }
 
+/* 저장 버튼 */
 #saveNote {
-  padding: 10px 20px;
+  padding: 8px 20px;
   background-color: #0066ff;
   color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+#saveNote:hover {
+  background-color: #0052cc;
+}
+
+/* 컬러 피커 */
+#colorPicker {
+  padding: 0;
+  width: 40px;
+  height: 40px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -186,4 +229,25 @@ body {
 }
 .delete-btn:hover {
   opacity: 1; /* 호버 시 완전 불투명 */
+}
+
+/* 드래그 앤 드롭 관련 스타일 */
+.note.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  cursor: grabbing;
+}
+
+.note {
+  cursor: grab;
+}
+
+.note:active {
+  cursor: grabbing;
+}
+
+.sortable-ghost {
+  opacity: 0.3;
+  background-color: #f0f0f0;
 }

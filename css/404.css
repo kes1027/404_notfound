@@ -5,7 +5,7 @@ body {
   justify-content: center;
   align-items: center;
   font-family: Arial, sans-serif;
-  background: url(../img/404_background.gif);
+  background: url(/img/404_background.gif);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

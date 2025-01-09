@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const saveButton = document.getElementById('saveNote');
   const colorPicker = document.getElementById('colorPicker');
 
-  let notes = JSON.parse(localStorage.getItem('notes') || '[]');
+  let notes = [];
 
   // Sortable.js 초기화
   const sortable = new Sortable(board, {
@@ -14,38 +14,26 @@ document.addEventListener('DOMContentLoaded', () => {
     ghostClass: 'sortable-ghost',
     dragClass: 'dragging',
     handle: '.note',
-    onEnd: function (evt) {
-      const itemEl = evt.item;
-      const newIndex = evt.newIndex;
-      const oldIndex = evt.oldIndex;
-
-      const note = notes.splice(oldIndex, 1)[0];
-      notes.splice(newIndex, 0, note);
-
-      localStorage.setItem('notes', JSON.stringify(notes));
-    },
   });
 
-  function displayNotes() {
-    board.innerHTML = notes
-      .map(
-        (note, index) => `
-        <div class="note" style="background-color: ${note.color}" data-index="${index}">
-            <div class="note-header">
-                <h3 class="note-title">${note.title}</h3>
-                <button class="delete-btn" onclick="deleteNote(${index})" title="삭제">×</button>
-            </div>
-            <p class="note-content">${note.content}</p>
-            <div class="note-footer">
-                <span>${note.date}</span>
-            </div>
-        </div>
-    `
-      )
-      .join('');
+  // Firebase 관련 함수들
+  function loadUserNotes(userId) {
+    const notesRef = firebase.database().ref(`users/${userId}/notes`);
+    notesRef.on('value', (snapshot) => {
+      const data = snapshot.val();
+      notes = data ? Object.values(data) : [];
+      displayNotes();
+    });
   }
 
+  // saveNote 함수 수정
   function saveNote() {
+    const auth = firebase.auth();
+    if (!auth.currentUser) {
+      alert('로그인이 필요합니다!');
+      return;
+    }
+
     const title = document.getElementById('noteTitle').value;
     const content = document.getElementById('noteContent').value;
     const color = colorPicker.value;
@@ -55,17 +43,76 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    notes.unshift({
-      title,
-      content,
-      color,
-      date: new Date().toLocaleString('ko-KR'),
-    });
+    try {
+      const userId = auth.currentUser.uid;
+      const notesRef = firebase.database().ref(`users/${userId}/notes`);
+      const newNoteRef = notesRef.push();
 
-    localStorage.setItem('notes', JSON.stringify(notes));
-    displayNotes();
-    modal.style.display = 'none';
-    clearModal();
+      // 한국 시간 포맷팅
+      const now = new Date();
+      const koreanDate = new Intl.DateTimeFormat('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      }).format(now);
+
+      newNoteRef.set({
+        id: newNoteRef.key,
+        title,
+        content,
+        color,
+        date: koreanDate,
+        userId: userId,
+      });
+
+      modal.style.display = 'none';
+      clearModal();
+    } catch (error) {
+      console.error('메모 저장 실패:', error);
+      alert('메모 저장에 실패했습니다.');
+    }
+  }
+
+  function deleteNote(noteId) {
+    const auth = firebase.auth();
+    if (!auth.currentUser) {
+      alert('로그인이 필요합니다!');
+      return;
+    }
+
+    if (confirm('이 메모를 삭제하시겠습니까?')) {
+      try {
+        const userId = auth.currentUser.uid;
+        const noteRef = firebase.database().ref(`users/${userId}/notes/${noteId}`);
+        noteRef.remove();
+      } catch (error) {
+        console.error('메모 삭제 실패:', error);
+        alert('메모 삭제에 실패했습니다.');
+      }
+    }
+  }
+
+  // displayNotes 함수의 메모 표시 부분도 수정
+  function displayNotes() {
+    board.innerHTML = notes
+      .map(
+        (note) => `
+      <div class="note" style="background-color: ${note.color}" data-id="${note.id}">
+          <div class="note-header">
+              <h3 class="note-title">${note.title}</h3>
+              <button class="delete-btn" onclick="deleteNote('${note.id}')">×</button>
+          </div>
+          <p class="note-content">${note.content}</p>
+          <div class="note-footer">
+              <span class="note-date">${note.date}</span>
+          </div>
+      </div>
+  `
+      )
+      .join('');
   }
 
   function clearModal() {
@@ -74,26 +121,12 @@ document.addEventListener('DOMContentLoaded', () => {
     colorPicker.value = '#ffffff';
   }
 
-  window.deleteNote = function (index) {
-    if (confirm('이 메모를 삭제하시겠습니까?')) {
-      notes.splice(index, 1);
-      localStorage.setItem('notes', JSON.stringify(notes));
-      displayNotes();
-    }
-  };
-
   // 이벤트 리스너
-  addButton.onclick = () => (modal.style.display = 'block');
-  closeButton.onclick = () => (modal.style.display = 'none');
-  saveButton.onclick = saveNote;
+  if (addButton) addButton.onclick = () => (modal.style.display = 'block');
+  if (closeButton) closeButton.onclick = () => (modal.style.display = 'none');
+  if (saveButton) saveButton.onclick = saveNote;
 
-  // 모달 외부 클릭 시 닫기
-  window.onclick = (event) => {
-    if (event.target === modal) {
-      modal.style.display = 'none';
-    }
-  };
-
-  // 초기 노트 표시
-  displayNotes();
+  // 전역 함수로 설정
+  window.deleteNote = deleteNote;
+  window.loadUserNotes = loadUserNotes;
 });
