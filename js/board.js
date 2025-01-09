@@ -16,9 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
     handle: '.note',
   });
 
-  // Firebase 관련 함수들
-  function loadUserNotes(userId) {
-    const notesRef = firebase.database().ref(`users/${userId}/notes`);
+  // 모든 메모를 로드하는 함수
+  function loadAllNotes() {
+    const notesRef = firebase.database().ref('notes');
     notesRef.on('value', (snapshot) => {
       const data = snapshot.val();
       notes = data ? Object.values(data) : [];
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // saveNote 함수 수정
+  // 메모 저장 함수
   function saveNote() {
     const auth = firebase.auth();
     if (!auth.currentUser) {
@@ -44,8 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const userId = auth.currentUser.uid;
-      const notesRef = firebase.database().ref(`users/${userId}/notes`);
+      const notesRef = firebase.database().ref('notes');
       const newNoteRef = notesRef.push();
 
       // 한국 시간 포맷팅
@@ -65,7 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
         content,
         color,
         date: koreanDate,
-        userId: userId,
+        userId: auth.currentUser.uid,
+        author: auth.currentUser.displayName || '익명', // Google 로그인 사용자의 이름 표시
       });
 
       modal.style.display = 'none';
@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // 메모 삭제 함수
   function deleteNote(noteId) {
     const auth = firebase.auth();
     if (!auth.currentUser) {
@@ -83,34 +84,40 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    if (confirm('이 메모를 삭제하시겠습니까?')) {
-      try {
-        const userId = auth.currentUser.uid;
-        const noteRef = firebase.database().ref(`users/${userId}/notes/${noteId}`);
-        noteRef.remove();
-      } catch (error) {
-        console.error('메모 삭제 실패:', error);
-        alert('메모 삭제에 실패했습니다.');
+    // 해당 노트의 작성자 확인
+    const noteRef = firebase.database().ref(`notes/${noteId}`);
+    noteRef.once('value', (snapshot) => {
+      const note = snapshot.val();
+      if (note && note.userId === auth.currentUser.uid) {
+        if (confirm('이 메모를 삭제하시겠습니까?')) {
+          noteRef.remove().catch((error) => {
+            console.error('메모 삭제 실패:', error);
+            alert('메모 삭제에 실패했습니다.');
+          });
+        }
+      } else {
+        alert('자신이 작성한 메모만 삭제할 수 있습니다.');
       }
-    }
+    });
   }
 
-  // displayNotes 함수의 메모 표시 부분도 수정
+  // 메모 표시 함수
   function displayNotes() {
     board.innerHTML = notes
       .map(
         (note) => `
-      <div class="note" style="background-color: ${note.color}" data-id="${note.id}">
-          <div class="note-header">
-              <h3 class="note-title">${note.title}</h3>
-              <button class="delete-btn" onclick="deleteNote('${note.id}')">×</button>
+          <div class="note" style="background-color: ${note.color}" data-id="${note.id}">
+              <div class="note-header">
+                  <h3 class="note-title">${note.title}</h3>
+                  <button class="delete-btn" onclick="deleteNote('${note.id}')">×</button>
+              </div>
+              <p class="note-content">${note.content}</p>
+              <div class="note-footer">
+                  <span class="note-date">${note.date}</span>
+                  <span class="note-author">작성자: ${note.author}</span>
+              </div>
           </div>
-          <p class="note-content">${note.content}</p>
-          <div class="note-footer">
-              <span class="note-date">${note.date}</span>
-          </div>
-      </div>
-  `
+      `
       )
       .join('');
   }
@@ -128,5 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 전역 함수로 설정
   window.deleteNote = deleteNote;
-  window.loadUserNotes = loadUserNotes;
+  window.loadAllNotes = loadAllNotes;
+
+  // 초기 로드
+  loadAllNotes();
 });

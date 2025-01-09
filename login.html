@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>login</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f5f5f5;
+        font-family: Arial, sans-serif;
+      }
+
+      .login-container {
+        background: white;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      .login-button {
+        background-color: #4285f4;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .login-button:hover {
+        background-color: #357abd;
+      }
+
+      .google-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      h1 {
+        color: #333;
+        margin-bottom: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <h1>404.notfound</h1>
+      <button id="googleLogin" class="login-button">
+        <img src="https://www.google.com/favicon.ico" alt="Google" class="google-icon" />
+        Google로 로그인
+      </button>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+    <script>
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: 'AIzaSyCMDMdcc28Rr90S5SOfF-64BDbazUNdXEM',
+        authDomain: 'notfound-404nf.firebaseapp.com',
+        databaseURL: 'https://notfound-404nf-default-rtdb.firebaseio.com',
+        projectId: 'notfound-404nf',
+        storageBucket: 'notfound-404nf.firebasestorage.app',
+        messagingSenderId: '1097755124904',
+        appId: '1:1097755124904:web:cb9f6c10adaa81ee640e9d',
+        measurementId: 'G-1S7D68E4VX',
+      };
+
+      // Firebase 초기화
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const provider = new firebase.auth.GoogleAuthProvider();
+
+      // 이미 로그인된 사용자 확인
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          // 로그인되어 있으면 메인 페이지로 이동
+          window.location.href = '404-notfound.html';
+        }
+      });
+
+      // Google 로그인 버튼 이벤트
+      document.getElementById('googleLogin').addEventListener('click', () => {
+        auth
+          .signInWithPopup(provider)
+          .then((result) => {
+            // 로그인 성공
+            window.location.href = '404-notfound.html';
+          })
+          .catch((error) => {
+            console.error('로그인 실패:', error);
+            alert('로그인에 실패했습니다.');
+          });
+      });
+    </script>
+  </body>
+</html>

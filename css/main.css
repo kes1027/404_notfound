@@ -91,14 +91,18 @@ body {
 }
 
 .note-footer {
-  margin-top: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.8rem;
-  color: #666;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+.note-author {
+  font-size: 12px;
+  color: #666;
+}
 /* 모달 기본 스타일 */
 .modal {
   display: none;
