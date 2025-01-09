@@ -86,7 +86,7 @@
       auth.onAuthStateChanged((user) => {
         if (user) {
           // 로그인되어 있으면 메인 페이지로 이동
-          window.location.href = '404-notfound.html';
+          window.location.href = 'main.html';
         }
       });
 
@@ -96,7 +96,7 @@
           .signInWithPopup(provider)
           .then((result) => {
             // 로그인 성공
-            window.location.href = '404-notfound.html';
+            window.location.href = 'main.html';
           })
           .catch((error) => {
             console.error('로그인 실패:', error);

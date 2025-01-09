@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404-notfound</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+  </head>
+  <body>
+    <!-- 로그아웃 버튼 -->
+    <div style="position: fixed; top: 20px; right: 20px; z-index: 1000">
+      <button
+        id="logoutBtn"
+        style="
+          padding: 8px 16px;
+          background-color: #f44336;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        "
+      >
+        로그아웃
+      </button>
+    </div>
+
+    <button id="addNote" class="add-button">+</button>
+
+    <div class="board-container" id="board">
+      <!-- 메모들이 여기에 추가됩니다 -->
+    </div>
+
+    <!-- 메모 작성 모달 -->
+    <div id="noteModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <input type="text" id="noteTitle" placeholder="제목" class="note-title-input" />
+        <textarea id="noteContent" placeholder="내용을 입력하세요..." class="note-content-input"></textarea>
+        <div class="modal-buttons">
+          <button id="saveNote">저장</button>
+          <input type="color" id="colorPicker" value="#ffffff" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <!-- Firebase 초기화 -->
+    <script>
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: 'AIzaSyCMDMdcc28Rr90S5SOfF-64BDbazUNdXEM',
+        authDomain: 'notfound-404nf.firebaseapp.com',
+        databaseURL: 'https://notfound-404nf-default-rtdb.firebaseio.com',
+        projectId: 'notfound-404nf',
+        storageBucket: 'notfound-404nf.firebasestorage.app',
+        messagingSenderId: '1097755124904',
+        appId: '1:1097755124904:web:cb9f6c10adaa81ee640e9d',
+        measurementId: 'G-1S7D68E4VX',
+      };
+
+      // Firebase 초기화
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.database();
+      const auth = firebase.auth();
+
+      // 전역 변수로 설정
+      window.db = db;
+      window.auth = auth;
+    </script>
+
+    <!-- 기존 JavaScript 파일 -->
+    <script src="js/board.js"></script>
+
+    <!-- Firebase 인증 초기화 (board.js 로드 후에 실행) -->
+    <script>
+      // 로그인 상태 확인
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          console.log('로그인된 사용자:', user.displayName);
+          // 모든 메모 로드
+          if (typeof window.loadAllNotes === 'function') {
+            window.loadAllNotes();
+          }
+        } else {
+          // 로그인되지 않은 경우 로그인 페이지로 이동
+          window.location.href = 'login.html';
+        }
+      });
+
+      // 로그아웃 버튼 이벤트
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        auth
+          .signOut()
+          .then(() => {
+            window.location.href = 'login.html';
+          })
+          .catch((error) => {
+            console.error('로그아웃 실패:', error);
+          });
+      });
+    </script>
+  </body>
+</html>
